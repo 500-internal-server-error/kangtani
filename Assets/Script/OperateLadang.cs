@@ -4,37 +4,67 @@ using UnityEngine;
 
 public class OperateLadang : MonoBehaviour
 {
-    private int Growth_Time_Left = 0;
-    private bool Ladang_Empty = true, Harvestable = false;
+    private int Growth_Time_Left = 0, Full_Growth_Time = 0;
+    private bool Harvestable = false;
     
-    [SerializeField] private SpriteRenderer SR;
-    [SerializeField] private Sprite BaseSprite;
+    public GameObject Inventory_Panel;
+
+    //[SerializeField] private SpriteRenderer SR;
+    //[SerializeField] private Sprite Default_Sprite;
     //= Resources.Load<Sprite>("");
-    public string Crop_Sprite;
-    public void AddCrops(){
-        Growth_Time_Left = 5;
-        Ladang_Empty = false;
+    //public Sprite Crop_Sprite1, Crop_Sprite2, Crop_Sprite3;
+
+
+    
+
+    public void AddCrops(int plant){
+        crop_gained = 0;
+        GameManager.GMInstance.GetComponent<GameManager>().GrowCrop(plant);
     }
 
     public void CheckCrop(){
-        if(Growth_Time_Left == 0 && !Ladang_Empty){
-            Harvestable = true;
-        }else
-        if(Growth_Time_Left > 0 && !Ladang_Empty){
+        if(Growth_Time_Left > 0 &&  Full_Growth_Time != 0){
             Growth_Time_Left--;
         }
     }
-
+    public int crop_gained = 0;
     private void Harvest(){
-        Ladang_Empty = true;
+        GameManager.Full_Growth_Time = 0;
+        Harvestable = false;
+        crop_gained = Random.Range(3,7);
+        GameManager.GMInstance.GetComponent<GameManager>().GetCrop(crop_gained);
     }
 
     void Update(){
-        if(Growth_Time_Left == 0){
-            //SR.sprite
-        }else{
-            SR.sprite = Resources.Load<Sprite>("./image/"+Crop_Sprite+"/1");
+        //SR.sprite = GameManager.Field_Sprite;
+
+        // if(Growth_Time_Left == 0 && !Harvestable){
+        //     SR.sprite = Default_Sprite;
+        // }else
+        // if(Growth_Time_Left == Full_Growth_Time){
+        //     //string x = "Resource/Image/"+Crop_Sprite+"/1.png";
+        //     //Debug.Log(x);
+        //     SR.sprite = Crop_Sprite1;
+            
+        // }else
+        // if(Growth_Time_Left > 0 && Growth_Time_Left < Full_Growth_Time){
+        //     //SR.sprite = Resources.Load<Sprite>("Resource/Image/"+Crop_Sprite+"/2");
+        //     SR.sprite = Crop_Sprite2;
+        // }else
+        // if(Growth_Time_Left == 0 && Harvestable){
+        //     //SR.sprite = Resources.Load<Sprite>("Resource/Image/"+Crop_Sprite+"/3");
+        //     SR.sprite = Crop_Sprite3;
+        // }
+                
+        this.gameObject.GetComponent<SpriteRenderer>().sprite = GameManager.Field_Sprite;
+
+        Full_Growth_Time = GameManager.Full_Growth_Time;
+        Growth_Time_Left = GameManager.Growth_Time_Left;
+
+        if(Growth_Time_Left == 0 && Full_Growth_Time != 0){
+            Harvestable = true;
         }
+
         if (Input.GetMouseButtonUp(0)){
 
             Vector3 mousePosRaw = Input.mousePosition;
@@ -47,31 +77,31 @@ public class OperateLadang : MonoBehaviour
             bool inMouse = bounds.Contains(mousePos2);
 
             if(inMouse){
-                if(Ladang_Empty && !Harvestable){
-                    //AddCrops();
-                }
                 if(Harvestable){
-                    //Harvest();
+                    Harvest();
                 }
-               
+
+                if(Full_Growth_Time == 0 && !Harvestable){
+                    Inventory_Panel.SetActive(true);
+                }                 
             }
             
         }
 
-        switch(Growth_Time_Left){
-            case >1:
-                this.gameObject.GetComponent<SpriteRenderer>().color = Color.blue;
-                break;
-            case 1:
-                this.gameObject.GetComponent<SpriteRenderer>().color = Color.yellow;
-                break;
-            case 0:
-                this.gameObject.GetComponent<SpriteRenderer>().color = Color.red;
-                break;
-            default:
-                this.gameObject.GetComponent<SpriteRenderer>().color = Color.white;
-                break;
-        }
+        // switch(Growth_Time_Left){
+        //     case >1:
+        //         this.gameObject.GetComponent<SpriteRenderer>().color = Color.blue;
+        //         break;
+        //     case 1:
+        //         this.gameObject.GetComponent<SpriteRenderer>().color = Color.yellow;
+        //         break;
+        //     case 0:
+        //         this.gameObject.GetComponent<SpriteRenderer>().color = Color.red;
+        //         break;
+        //     default:
+        //         this.gameObject.GetComponent<SpriteRenderer>().color = Color.white;
+        //         break;
+        // }
 
     }
 

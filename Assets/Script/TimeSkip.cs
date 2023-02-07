@@ -7,6 +7,8 @@ public class TimeSkip : MonoBehaviour
 {
     public GameManager gm;
     public GameObject BlackScreen;
+
+    //private GameObject F_Field = GameObject.Find("Field");
     //future
     void TriggerRandomEvent(){
         int x = Random.Range(0,100);
@@ -43,6 +45,12 @@ public class TimeSkip : MonoBehaviour
             GameManager.Year++;
         }
         if(ganjil) ganjil = false; else ganjil = true;
+        
+        //Debug.Log("In Time SKip: "+GameManager.Growth_Time_Left);
+        // F_Field.GetComponent<OperateLadang>().Grow();
+        if(GameManager.Growth_Time_Left > 0){
+            GameManager.Growth_Time_Left--;
+        }
         
     }
     IEnumerator fadeBlack(float time){
